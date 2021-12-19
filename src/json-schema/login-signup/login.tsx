@@ -1,18 +1,21 @@
-import React from 'react'
-import { createForm } from '@formily/core'
-import { createSchemaField } from '@formily/react'
-import { Form, FormItem, Input, Password, Submit } from '@formily/antd'
-import { Tabs, Card } from 'antd'
-import * as ICONS from '@ant-design/icons'
-import { VerifyCode } from './VerifyCode'
+import React from 'react';
+import { createForm } from '@formily/core';
+import { createSchemaField } from '@formily/react';
+import { Form, FormItem, Input, Password, Submit } from '@formily/antd';
+import { Tabs, Card } from 'antd';
+import * as ICONS from '@ant-design/icons';
+import { VerifyCode } from './VerifyCode';
+import { isNumber } from 'lodash';
+
+window.console.log('ICONS---------------->', ICONS);
 
 const normalForm = createForm({
   validateFirst: true,
-})
+});
 
 const phoneForm = createForm({
   validateFirst: true,
-})
+});
 
 const SchemaField = createSchemaField({
   components: {
@@ -23,10 +26,19 @@ const SchemaField = createSchemaField({
   },
   scope: {
     icon(name: string) {
-      return React.createElement(ICONS[name])
+      window.console.log('name ---------------->', name, ICONS[name]);
+      return React.createElement(ICONS[name]);
+    },
+    isEmpty(num: number, valid: boolean) {
+      window.console.log('isEmpty num, valid---------------->', typeof num, typeof valid);
+      if (isNumber(num)) {
+        window.console.log('isEmpty isNumber ----------------> true');
+        return true;
+      }
+      return valid;
     },
   },
-})
+});
 
 const normalSchema = {
   type: 'object',
@@ -52,7 +64,7 @@ const normalSchema = {
       },
     },
   },
-}
+};
 
 const phoneSchema = {
   type: 'object',
@@ -82,25 +94,25 @@ const phoneSchema = {
           dependencies: ['.phone#value', '.phone#valid'],
           fulfill: {
             state: {
-              'component[1].readyPost': '{{$deps[0] && $deps[1]}}',
-              'component[1].phoneNumber': '{{$deps[0]}}',
+              'component[1].readyPost': '{{ isEmpty($deps[0], $deps[1]) }}',
+              'component[1].phoneNumber': '{{ $deps[0] }}',
             },
           },
         },
       ],
     },
   },
-}
+};
 
 export default () => {
-
   const onAutoSubmit = (data) => {
     normalForm.validate();
-    window.console.log('normalForm---------------->', normalForm.setValuesIn('username1111', 12345));
+    normalForm.setValuesIn('username1111', 'sdsdsdsd');
+    window.console.log('normalForm---------------->', normalForm);
+    window.console.log('normalForm.values---------------->', normalForm.values);
     window.console.log('normalForm.fields---------------->', normalForm.fields);
     window.console.log('onAutoSubmit---------->', data);
-    
-  }
+  };
 
   return (
     <div
@@ -114,12 +126,7 @@ export default () => {
       <Card style={{ width: 400 }}>
         <Tabs style={{ overflow: 'visible', marginTop: -10 }}>
           <Tabs.TabPane key="1" tab="账密登录">
-            <Form
-              form={normalForm}
-              layout="vertical"
-              size="large"
-              onAutoSubmit={onAutoSubmit}
-            >
+            <Form form={normalForm} layout="vertical" size="large" onAutoSubmit={onAutoSubmit}>
               <SchemaField schema={normalSchema} />
               <Submit block size="large">
                 登录
@@ -127,12 +134,7 @@ export default () => {
             </Form>
           </Tabs.TabPane>
           <Tabs.TabPane key="2" tab="手机登录">
-            <Form
-              form={phoneForm}
-              layout="vertical"
-              size="large"
-              onAutoSubmit={console.log}
-            >
+            <Form form={phoneForm} layout="vertical" size="large" onAutoSubmit={console.log}>
               <SchemaField schema={phoneSchema} />
               <Submit block size="large">
                 登录
@@ -151,5 +153,5 @@ export default () => {
         </div>
       </Card>
     </div>
-  )
-}
+  );
+};
