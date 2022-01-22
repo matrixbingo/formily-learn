@@ -28,6 +28,7 @@ const schema = {
         style: {
           width: 120,
         },
+        showSearch: true,
       },
     },
   },

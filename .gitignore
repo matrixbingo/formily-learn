@@ -28,4 +28,7 @@
 
 # vs
 .history
+
+#mac
 .zip
+.DS_Store

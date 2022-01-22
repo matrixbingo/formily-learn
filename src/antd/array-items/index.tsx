@@ -231,11 +231,19 @@ const schema = {
 };
 
 export default () => {
+
+  const onSubmit = (data) => {
+    form.validate();
+    window.console.log('form---------------->', form);
+    window.console.log('form.values---------------->', form.values);
+    window.console.log('data---------------->', data);
+  }
+
   return (
     <FormProvider form={form}>
       <SchemaField schema={schema} />
       <FormButtonGroup>
-        <Submit onSubmit={console.log}>提交</Submit>
+        <Submit onSubmit={onSubmit}>提交</Submit>
       </FormButtonGroup>
     </FormProvider>
   );

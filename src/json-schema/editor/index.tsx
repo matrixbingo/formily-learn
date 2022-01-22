@@ -72,7 +72,7 @@ const SchemaField = createSchemaField({
       };
 
       field.loading = true;
-      fetch('//unpkg.com/china-location/dist/location.json')
+      fetch('https://unpkg.com/china-location/dist/location.json')
         .then((res) => res.json())
         .then(
           action.bound((data) => {
