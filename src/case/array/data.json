@@ -1,0 +1,25 @@
+// const:常量 2: function 3：param
+
+[   // Header 常量时 3种情况
+  { "position" : "header",  "type": "string", "name": "name", "getType": "const", "value": { "type":"string", "value":"常量值"}, "transfer": ["transfer1", "transfer2"], "desc": "备注"},
+  { "position" : "header",  "type": "string", "name": "name", "getType": "function", "transfer": ["transfer1", "transfer2"], "desc": "备注"},
+  { "position" : "header",  "type": "string", "name": "name", "getType": "param",  "value":{ "type":"变量类型", "value":"变量值"}, "transfer": ["transfer1", "transfer2"], "desc": "备注"},
+
+  { "position" : "query",  "type": "string", "name": "name", "getType": "const", "value": { "type":"string", "value":"常量值"}, "transfer": ["transfer1", "transfer2"], "desc": "备注"},
+  { "position" : "query",  "type": "string", "name": "name", "getType": "function", "transfer": ["transfer1", "transfer2"], "desc": "备注"},
+  { "position" : "query",  "type": "string", "name": "name", "getType": "param",  "value":{ "type":"变量类型", "value":"变量值"}, "transfer": ["transfer1", "transfer2"], "desc": "备注"},
+
+  // String number int long date boolean
+  { "position" : "body",  "type": "string", "name": "name", "getType": "const", "value": { "type":"string", "value":"常量值"}, "transfer": ["transfer1", "transfer2"], "desc": "备注"},
+  { "position" : "body",  "type": "string", "name": "name", "getType": "function", "transfer": ["transfer1", "transfer2"], "desc": "备注"},
+  { "position" : "body",  "type": "string", "name": "name", "getType": "param",  "value":{ "type":"变量类型", "value":"变量值"}, "transfer": ["transfer1", "transfer2"], "desc": "备注"},
+
+  { "position" : "body",  "type": "object", "desc": "备注", "param":
+    [
+    { "position" : "body", "type": "string", "name": "name", "getType": "const", "value": { "type":"string", "value":"常量值"}, "transfer": ["transfer1", "transfer2"], "desc": "备注"},
+    { "position" : "body", "type": "string", "name": "name", "getType": "param",  "value":{ "type":"变量类型", "value":"变量值"}, "transfer": ["transfer1", "transfer2"], "desc": "备注"},
+    { "position" : "body", "type": "string", "name": "name", "getType": "function", "transfer": ["transfer1", "transfer2"], "desc": "备注"},
+
+      {  "type": "object", "param": [], "desc": "备注" }
+  ] }
+]
