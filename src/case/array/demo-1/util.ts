@@ -124,6 +124,27 @@ export const createClild2 = () => {
                     },
                   },
                 },
+                right: {
+                  type: 'void',
+                  'x-component': 'Space',
+                  properties: {
+                    remove: {
+                      type: 'void',
+                      'x-decorator': 'FormItem',
+                      'x-component': 'ArrayItems.Remove',
+                    },
+                    add: {
+                      type: 'void',
+                      'x-decorator': 'FormItem',
+                      'x-component': 'ArrayItems.Addition',
+                      'x-component-props': {
+                        style: {
+                          width: 40,
+                        },
+                      },
+                    },
+                  },
+                },
               },
             },
           },
