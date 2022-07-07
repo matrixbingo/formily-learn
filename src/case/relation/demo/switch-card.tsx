@@ -2,11 +2,11 @@
 import React, { FC, useEffect } from 'react';
 import { Button, Col, Row } from 'antd';
 import { observer, useField, useForm } from '@formily/react';
-import { Form, Field } from '@formily/core';
+import { Form, Field, FormPathPattern } from '@formily/core';
 
 interface SwitchCardProps {
   form: Form;
-  field: Field;
+  basePath?: FormPathPattern;
   children: React.ReactNode;
   name: [index: number, name: string] | string;
   isShow: boolean;
@@ -43,33 +43,32 @@ const cardStyle: React.CSSProperties = {
 type SwitchValue = 'and' | 'or';
 
 interface SwitchButtonProps {
-  disabled?: boolean;
-  value?: SwitchValue;
-  defaultValue?: SwitchValue;
-  onChange?: (value: SwitchValue) => void;
   form: Form;
-  field: Field;
+  disabled?: boolean;
+  defaultValue?: SwitchValue;
+  path: string;
   style: React.CSSProperties;
 }
 
-const SwitchButton = ({
-  value,
-  onChange,
-  style,
-  disabled = false,
-  defaultValue = 'and',
-}: SwitchButtonProps) => {
+const onChange = (form: Form, path: string, value: SwitchValue) => {
+  form.setValuesIn(path, value);
+}
+
+const SwitchButton = ({form, style, path, disabled = false, defaultValue = 'and'}: SwitchButtonProps) => {
+
+  const value = form.getValuesIn(path);
+
   const onClick = () => {
-    if (value === 'and' && onChange) {
-      onChange('or');
+    if (value === 'and') {
+      onChange(form, path, 'or');
     }
     if (value === 'or' && onChange) {
-      onChange('and');
+      onChange(form, path, 'and');
     }
   };
 
   useEffect(() => {
-    onChange && onChange(defaultValue);
+    onChange(form, path, defaultValue);
   }, []);
 
   return (
@@ -80,13 +79,12 @@ const SwitchButton = ({
 };
 
 export const SwitchCard: FC<SwitchCardProps> = observer((props) => {
-  const { children, form, field, name, isShow = true, disabled } = props;
-  window.console.log('SwitchCard field ---------------->', field);
+  const { children, form, basePath, name, isShow = true, disabled } = props;
   return (
     <Row className="SwitchCard">
       <Col style={{ ...cardStyle, width: 40 }}>
         <div style={{ ...style, margin: '10px 24px 34px 12px', display: isShow ? 'flex' : 'none' }}>
-          <SwitchButton form={form} field={field} disabled={disabled} style={btnStyle} />
+          <SwitchButton form={form} path={basePath + '.' + name} disabled={disabled} style={btnStyle} />
         </div>
       </Col>
       <Col style={{ width: 'calc(100% - 40px)' }}>{children}</Col>
@@ -104,18 +102,6 @@ export const SwitchCard: FC<SwitchCardProps> = observer((props) => {
 //       </Col>
 //       <Col style={{ width: 'calc(100% - 40px)' }}>
 //         {children}
-//       </Col>
-//     </Row>
-//   );
-// };
-
-// export const SwitchCard: FC<SwitchCardProps> = ({ children, name, isShow = true, disabled=false }) => {
-//   return (
-//     <Row className='SwitchCard'>
-//       <Col style={{ ...cardStyle, width: 40, height: 100 }}>
-//         <div style={{ ...style, margin: '10px 24px 34px 12px', display: 'flex' }}>
-//           <SwitchButton disabled={disabled} style={btnStyle} />
-//         </div>
 //       </Col>
 //     </Row>
 //   );

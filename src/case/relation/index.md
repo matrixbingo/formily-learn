@@ -1,9 +1,19 @@
 ## relation
 
-### 自定义联动
+### 一维结构
 
 ```tsx | pure
 
 ```
 
-<code src="./demo-1/demo-1.tsx" />
+<code src="./demo-1.tsx" />
+
+### 二维结构
+
+```tsx | pure
+
+```
+
+
+
+<code src="./demo-2.tsx" />

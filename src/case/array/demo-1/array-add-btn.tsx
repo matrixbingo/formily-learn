@@ -5,6 +5,7 @@ import { ArrayItems } from '@formily/antd';
 import { cloneDeep, fromPairs, isNumber, replace } from 'lodash';
 import { observer, useField, useForm } from '@formily/react';
 import { ArrayField, Form } from '@formily/core';
+import { toJS } from '@formily/reactive';
 
 const item = {name: "", position: 1, type: 3}
 
@@ -14,7 +15,7 @@ interface ArrayAddBtnProps {
 
 const ArrayAddBtn: FC<ArrayAddBtnProps> = observer(({ level }) => {
   const arrayObj = ArrayItems.useArray?.();
-  const index = ArrayItems.useIndex?.();
+  const index = ArrayItems.useIndex?.() || 0;
   const form = useForm();
   // const field = form.getFieldState(['array', index]);
   const field = useField<ArrayField>();
@@ -22,6 +23,11 @@ const ArrayAddBtn: FC<ArrayAddBtnProps> = observer(({ level }) => {
   base = replace(base, '.layout', '');
   // field.query().
   // window.console.log('base1111---------------->',field.address.toString(), level, base, form);
+  const values = toJS(form.values);
+  const line =  values.array[index];
+  if(line.position === 1 && level != 2){
+    return null
+  }
 
   const add = () => {
     const path = base + '.container.array';
@@ -40,7 +46,7 @@ const ArrayAddBtn: FC<ArrayAddBtnProps> = observer(({ level }) => {
   }
 
   return (
-    <Button onClick={add}>添加子节点</Button>
+    <Button onClick={add}>添加子节点1</Button>
   );
 });
 

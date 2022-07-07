@@ -15,9 +15,10 @@ import {
 } from '@formily/antd';
 import { createForm, Form } from '@formily/core';
 import { FormProvider, createSchemaField, observer } from '@formily/react';
-import ConditionRules from './condition-rules';
+import ConditionRules from './single/condition-rules';
 import { delay } from 'lodash';
-import { SwitchCard } from './switch-card';
+import { SwitchCard } from './demo/switch-card';
+import ConditionRulesDouble from './double/condition-rules-double';
 
 const item = { name: '2323', position: 1, type: 3 };
 
@@ -43,6 +44,7 @@ const SchemaField = createSchemaField({
     Select,
     ArrayItems,
     ConditionRules,
+    ConditionRulesDouble,
     SwitchCard,
     SpaceDea,
   },
@@ -50,12 +52,28 @@ const SchemaField = createSchemaField({
 
 const form = createForm();
 
+const customizer = {
+  id: {
+    type: 'string',
+    required: true,
+    'x-decorator': 'FormItem',
+    'x-component': 'Input',
+  },
+  name: {
+    type: 'string',
+    required: true,
+    'x-decorator': 'FormItem',
+    'x-component': 'Input',
+  },
+};
+
 const schema = {
   type: 'object',
   properties: {
     container: {
       type: 'void',
       'x-component': 'ConditionRules',
+      'x-component-props': { customizer }
     },
   },
 };

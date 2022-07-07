@@ -12,14 +12,15 @@ import {
   Space,
   Form,
 } from '@formily/antd';
-import { createSchemaField, observer, useField, useForm } from '@formily/react';
-import CustomChild from './custom-child';
-import { createClild, createRight } from './util';
-import ArrayAddBtn from './array-add-btn';
-import ArrayAddBtn2 from './array-add-btn2';
-import { SwitchCard } from './switch-card';
+import { createSchemaField, ISchema, observer, useField, useForm } from '@formily/react';
+import CustomChild from '../demo/custom-child';
+import { createClild, createRight } from '../demo/util';
+import ArrayAddBtn from '../demo/array-add-btn';
+import ArrayAddBtn2 from '../demo/array-add-btn2';
+import { SwitchCard } from '../demo/switch-card';
 import { toJS } from '@formily/reactive';
 import { assign, get } from 'lodash';
+import ConditionRules from '../single/condition-rules';
 
 const SchemaField = createSchemaField({
   components: {
@@ -34,17 +35,10 @@ const SchemaField = createSchemaField({
     CustomChild,
     ArrayAddBtn,
     ArrayAddBtn2,
+    ConditionRules,
   },
 });
 
-const customizer = {
-  appKey: {
-    type: 'string',
-    required: true,
-    'x-decorator': 'FormItem',
-    'x-component': 'Input',
-  },
-};
 
 const right = {
   type: 'void',
@@ -57,11 +51,15 @@ const right = {
   },
 };
 
+
+
 const createArray = (
   path = { root: 'labelRule', rules: 'rules', relation: 'relation', type: 'type' },
-) => {
+  customizer: any
+): ISchema => {
   const { rules } = path;
-
+  const _customizer = customizer || {} as any;
+  window.console.log('_customizer---------------->', _customizer);
   return {
     type: 'object',
     properties: {
@@ -74,8 +72,11 @@ const createArray = (
           type: 'object',
           'x-decorator': 'ArrayItems.Item',
           properties: {
-            ...customizer,
-            right,
+            bbb: {
+              type: 'void',
+              'x-component': 'ConditionRules',
+              'x-component-props': { customizer: _customizer }
+            },
           },
         },
         properties: {
@@ -98,7 +99,8 @@ const createSchema = (
     type: 'type',
     typeValue: 'rule',
   },
-) => {
+  customizer: ISchema
+): ISchema => {
   const { root, type, relation, typeValue } = path;
   return {
     type: 'object',
@@ -120,16 +122,8 @@ const createSchema = (
             'x-display': 'hidden',
             default: typeValue,
           },
-          // [root + '.' + relation]: {
-          //   type: 'string',
-          //   'x-decorator': 'FormItem',
-          //   'x-component': 'SwitchCard',
-          //   'x-decorator-props': {
-          //     defaultValue: 'and',
-          //   }
-          // },
           [root]: {
-            ...createArray(path),
+            ...createArray(path, customizer),
           },
         },
       },
@@ -137,12 +131,13 @@ const createSchema = (
   };
 };
 
-interface ConditionRules {
+interface ConditionRulesProps {
+  customizer: ISchema;
   path?: { root?: string; rules?: string; relation?: string; type?: string };
 }
 
-const ConditionRules: FC<ConditionRules> = observer((props) => {
-  const { path: pathBase = {} } = props;
+const ConditionRulesDouble: FC<ConditionRulesProps> = observer((props) => {
+  const { path: pathBase = {}, customizer } = props;
 
   const path = assign(
     { root: 'root', rules: 'rules', relation: 'relation', type: 'type', typeValue: 'rule' },
@@ -153,21 +148,19 @@ const ConditionRules: FC<ConditionRules> = observer((props) => {
   const values = toJS(form.values);
   const { root, rules, relation } = path;
   const size = get(values, [root, rules])?.length ?? 0;
-  window.console.log('---------------->', form);
+
   return (
     <Form form={form} labelCol={5} wrapperCol={16} onAutoSubmit={console.log}>
       <SwitchCard
         form={form}
-        field={field}
+        basePath={root}
         name={relation}
         isShow={size > 0}
         disabled={false}
         key={1}
       >
-        <SchemaField schema={createSchema(path)} />
+        <SchemaField schema={createSchema(path, customizer)} />
       </SwitchCard>
-      {/* <SchemaField schema={createSchema()} /> */}
-      {/* <SchemaField schema={createSchema()} /> */}
     </Form>
 
     // <RecursionField
@@ -179,4 +172,4 @@ const ConditionRules: FC<ConditionRules> = observer((props) => {
   );
 });
 
-export default ConditionRules;
+export default ConditionRulesDouble;
