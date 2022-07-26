@@ -59,12 +59,6 @@ const customizer = {
     'x-decorator': 'FormItem',
     'x-component': 'Input',
   },
-  age: {
-    type: 'string',
-    required: true,
-    'x-decorator': 'FormItem',
-    'x-component': 'Input',
-  },
 };
 
 const schema = {
@@ -73,7 +67,7 @@ const schema = {
     container: {
       type: 'void',
       'x-component': 'ConditionRulesDouble',
-      'x-component-props': { customizer }
+      'x-component-props': { customizer, defaultValue: {id: '111'}}
     },
   },
 };

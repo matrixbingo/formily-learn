@@ -62,13 +62,13 @@ export const createClild3 = () => {
             },
           },
         },
-        // properties: {
-        //   add: {
-        //     type: 'void',
-        //     title: '添加一级节点',
-        //     'x-component': 'ArrayItems.Addition',
-        //   },
-        // },
+        properties: {
+          add: {
+            type: 'void',
+            title: '添加一级节点',
+            'x-component': 'ArrayItems.Addition',
+          },
+        },
       },
     },
   };

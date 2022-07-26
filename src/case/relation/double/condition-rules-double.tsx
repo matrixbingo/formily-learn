@@ -19,8 +19,10 @@ import ArrayAddBtn from '../demo/array-add-btn';
 import ArrayAddBtn2 from '../demo/array-add-btn2';
 import { SwitchCard } from '../demo/switch-card';
 import { toJS } from '@formily/reactive';
-import { assign, get } from 'lodash';
+import { assign, cloneDeep, get } from 'lodash';
 import ConditionRules from '../single/condition-rules';
+import { Form as FormProps } from '@formily/core';
+import { Button } from 'antd';
 
 const SchemaField = createSchemaField({
   components: {
@@ -51,15 +53,12 @@ const right = {
   },
 };
 
-
-
 const createArray = (
   path = { root: 'labelRule', rules: 'rules', relation: 'relation', type: 'type' },
   customizer: any
 ): ISchema => {
   const { rules } = path;
   const _customizer = customizer || {} as any;
-  window.console.log('_customizer---------------->', _customizer);
   return {
     type: 'object',
     properties: {
@@ -72,20 +71,20 @@ const createArray = (
           type: 'object',
           'x-decorator': 'ArrayItems.Item',
           properties: {
-            bbb: {
+            customizer: {
               type: 'void',
               'x-component': 'ConditionRules',
-              'x-component-props': { customizer: _customizer }
+              'x-component-props': { customizer: _customizer, hasAddition: false, isSingle: false }
             },
           },
         },
-        properties: {
-          addition: {
-            type: 'void',
-            title: '添加条目',
-            'x-component': 'ArrayItems.Addition',
-          },
-        },
+        // properties: {
+        //   addition: {
+        //     type: 'void',
+        //     title: '添加条目',
+        //     'x-component': 'ArrayItems.Addition',
+        //   },
+        // },
       },
     },
   };
@@ -105,7 +104,7 @@ const createSchema = (
   return {
     type: 'object',
     properties: {
-      name: {
+      space: {
         type: 'void',
         'x-decorator': 'FormItem',
         'x-decorator-props': {
@@ -131,22 +130,36 @@ const createSchema = (
   };
 };
 
+type  Path = { root?: string; rules?: string; relation?: string; type?: string };
+
 interface ConditionRulesProps {
   customizer: ISchema;
-  path?: { root?: string; rules?: string; relation?: string; type?: string };
+  defaultValue?: any;
+  singlePath?: Path;
+  doublePath?: Path;
 }
 
-const ConditionRulesDouble: FC<ConditionRulesProps> = observer((props) => {
-  const { path: pathBase = {}, customizer } = props;
+const addition = (form: FormProps, size: number, doublePath: Path, singlePath: Path, defaultValue: any) => {
+  const { root: doubleRoot = 'root', rules: doubleRules = 'rules' } = doublePath;
+  const { rules: singleRules = 'rules' } = singlePath;
+  form.setValuesIn([doubleRoot, doubleRules, size, singleRules], [cloneDeep(defaultValue)]);
+};
 
-  const path = assign(
+const ConditionRulesDouble: FC<ConditionRulesProps> = observer((props) => {
+  const { singlePath: pathBase = {}, doublePath: pathRoot = {}, defaultValue = {}, customizer } = props;
+  const singlePath = assign(
     { root: 'root', rules: 'rules', relation: 'relation', type: 'type', typeValue: 'rule' },
     pathBase,
   );
+  const doublePath = assign(
+    { root: 'root', rules: 'rules', relation: 'relation', type: 'type', typeValue: 'rule' },
+    pathRoot,
+  );
+
   const field = useField();
   const form = useForm();
   const values = toJS(form.values);
-  const { root, rules, relation } = path;
+  const { root, rules, relation } = doublePath;
   const size = get(values, [root, rules])?.length ?? 0;
 
   return (
@@ -159,7 +172,8 @@ const ConditionRulesDouble: FC<ConditionRulesProps> = observer((props) => {
         disabled={false}
         key={1}
       >
-        <SchemaField schema={createSchema(path, customizer)} />
+        <SchemaField schema={createSchema(singlePath, customizer)} />
+        <Button onClick={() => addition(form, size, doublePath, singlePath, defaultValue)}>+  添加条目</Button>
       </SwitchCard>
     </Form>
 
